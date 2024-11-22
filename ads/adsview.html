@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads Webview</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .ad-banner {
+            width: 300px;
+            height: 250px;
+            border: 2px solid #ccc;
+            background-image: url('https://via.placeholder.com/300x250?text=Your+Ad+Here');
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .ad-banner:hover {
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="ad-banner" onclick="navigateToAd()">
+        <p style="display: none;">Advertisement</p>
+    </div>
+
+    <script>
+        function navigateToAd() {
+            const adUrl = "https://example.com/your-ad-link"; // Đường dẫn của quảng cáo
+            window.location.href = adUrl;
+        }
+    </script>
+</body>
+</html>
