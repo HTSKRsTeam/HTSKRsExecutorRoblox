@@ -101,46 +101,40 @@
             <button class="btn btn-copy" id="copyBtn">Sao Chép</button>
         </div>
         <div id="toast" class="toast">Đã Sao Chép Thành Công!</div>
+        <div class="short-url">
+            <p id="shortUrl">URL Đang Được Rút Gọn...</p>
+        </div>
     </div>
 
     <script>
         const keySpan = document.getElementById('key');
         const copyBtn = document.getElementById('copyBtn');
         const toast = document.getElementById('toast');
+        const shortUrlElement = document.getElementById('shortUrl');
 
-        // Kiểm tra nguồn (referrer)
+        // Kiểm tra Referrer
         const referrer = document.referrer;
         const validReferrer = "link4m.com"; // Chỉ cho phép từ link4m.com
         const isValidReferrer = referrer.includes(validReferrer);
 
-        // Tạo token ngẫu nhiên
-        function generateRandomToken(length = 16) {
+        // Tạo token và key
+        function generateRandomString(length = 16) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let token = '';
+            let result = '';
             for (let i = 0; i < length; i++) {
-                token += characters.charAt(Math.floor(Math.random() * characters.length));
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
-            return token;
+            return result;
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        let token = urlParams.get('token');
+        let token = urlParams.get('token') || generateRandomString();
+        let key = urlParams.get('key') || generateRandomString();
 
+        // Chỉ hiển thị key nếu referrer hợp lệ
         if (isValidReferrer) {
-            // Kiểm tra token, nếu không có thì tạo mới
-            if (!token || token.trim() === "") {
-                token = generateRandomToken();
-                keySpan.textContent = `Token: ${token}`;
-            } else {
-                const key = urlParams.get('key');
-                if (key && key.trim() !== "") {
-                    keySpan.textContent = key;
-                } else {
-                    keySpan.textContent = "Không Có Key!";
-                }
-            }
+            keySpan.textContent = `Token: ${token}, Key: ${key}`;
         } else {
-            // Không hợp lệ
             keySpan.textContent = "Truy Cập Không Hợp Lệ!";
             copyBtn.disabled = true;
             copyBtn.style.background = '#ccc';
@@ -149,9 +143,9 @@
 
         // Sao chép key
         copyBtn.addEventListener('click', () => {
-            const key = keySpan.textContent;
-            if (key !== "Truy Cập Không Hợp Lệ!" && key !== "Không Có Key!") {
-                navigator.clipboard.writeText(key).then(() => {
+            const keyText = keySpan.textContent;
+            if (keyText !== "Truy Cập Không Hợp Lệ!" && keyText !== "Không Có Key") {
+                navigator.clipboard.writeText(keyText).then(() => {
                     showToast();
                 });
             }
@@ -163,6 +157,23 @@
                 toast.className = "toast";
             }, 3000);
         }
+
+        // Rút gọn URL
+        const baseUrl = "https://htskrs.cfd/ht/nn/main.html";
+        const apiUrl = `https://link4m.co/api-shorten/v2?api=65e2c8ebf0f5113d1172d0b7&url=${encodeURIComponent(baseUrl + "?token=" + token + "&key=" + key)}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.url) {
+                    shortUrlElement.textContent = `URL Rút Gọn: ${data.url}`;
+                } else {
+                    shortUrlElement.textContent = "Lỗi Rút Gọn URL!";
+                }
+            })
+            .catch(() => {
+                shortUrlElement.textContent = "Lỗi Kết Nối API!";
+            });
     </script>
 </body>
 </html>
