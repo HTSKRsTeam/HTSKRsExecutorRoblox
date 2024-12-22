@@ -1,6 +1,4 @@
-- Fix Cxapi (Cloudy).
-- Fix Ads View
-- Fix Not Inject Roblox
-- Fix Kill Roblox
-- Fix Themes Not Work
-- Fix Ui/Ux Crash, Lag
++ Add New API HongTham
+- Remove Syn API
++ Fix UI/UX
++ Update Cloudy API V6
